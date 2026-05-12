@@ -1,0 +1,16 @@
+[
+  {
+    "id": "1",
+    "name": "Landing Zones",
+    "description": "All landing zones on Lamang.",
+    "place_count": 12,
+    "source_url": "https://gzwtacmap.com/maps/lamang/group/1"
+  },
+  {
+    "id": "38",
+    "name": "Combat Outposts",
+    "description": "Faction combat outposts across Lamang.",
+    "place_count": 9,
+    "source_url": "https://gzwtacmap.com/maps/lamang/group/38"
+  }
+]

@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GZW Tac DisBot — Operator Setup Flow</title>
+<style>
+  /* ============================================================
+     GZW palette — military olive on charcoal, tactical amber accents
+     ============================================================ */
+  :root {
+    --bg:        #14150f;
+    --bg-2:      #1c1d14;
+    --panel:     #1f2117;
+    --panel-2:   #262a1c;
+    --line:      #38402a;
+    --line-2:    #4a5532;
+    --olive:     #6f7e54;
+    --olive-2:   #8aa069;
+    --khaki:     #b4b39a;
+    --amber:     #d9a441;
+    --amber-2:   #efbd5a;
+    --crimson:   #a02525;
+    --safe:      #6a8a4a;
+    --text:      #e8e7d6;
+    --muted:     #8b8a78;
+    --done:      #4f7942;
+    --shadow:    0 0 0 1px var(--line), 0 18px 30px -16px rgba(0,0,0,.6);
+  }
+
+  /* ============================================================ */
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: ui-monospace, "JetBrains Mono", "Cascadia Code",
+                 SFMono-Regular, Menlo, monospace;
+    background:
+      radial-gradient(ellipse at 20% -10%, rgba(120,140,80,.12), transparent 55%),
+      radial-gradient(ellipse at 100% 110%, rgba(217,164,65,.08), transparent 50%),
+      var(--bg);
+    color: var(--text);
+    line-height: 1.55;
+    min-height: 100vh;
+  }
+
+  /* ---- header ---- */
+  header.briefing {
+    border-bottom: 1px solid var(--line);
+    background: linear-gradient(180deg, rgba(0,0,0,.45), transparent);
+    padding: 28px 32px 18px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px 24px;
+    align-items: end;
+  }
+  header.briefing .crest {
+    font-size: 11px;
+    letter-spacing: .35em;
+    color: var(--amber);
+    text-transform: uppercase;
+  }
+  header.briefing h1 {
+    margin: 6px 0 0;
+    font-size: clamp(22px, 3vw, 32px);
+    letter-spacing: .04em;
+  }
+  header.briefing .sub {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 6px;
+  }
+  header.briefing .meta {
+    text-align: right;
+    color: var(--khaki);
+    font-size: 11px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+  }
+  header.briefing .meta .pulse {
+    color: var(--safe);
+    text-shadow: 0 0 6px var(--safe);
+  }
+
+  /* ---- progress bar ---- */
+  .progress-shell {
+    background: var(--panel);
+    border-bottom: 1px solid var(--line);
+    padding: 14px 32px;
+    position: sticky;
+    top: 0;
+    z-index: 9;
+  }
+  .progress-shell .row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    font-size: 12px;
+  }
+  .progress-bar {
+    flex: 1 1 320px;
+    height: 14px;
+    border: 1px solid var(--line-2);
+    background: #0d0e08;
+    position: relative;
+    overflow: hidden;
+  }
+  .progress-bar > .fill {
+    height: 100%;
+    width: 0%;
+    background: repeating-linear-gradient(
+      45deg,
+      var(--olive) 0 8px,
+      var(--olive-2) 8px 16px
+    );
+    transition: width .35s cubic-bezier(.5,.1,.25,1);
+  }
+  .progress-label {
+    color: var(--khaki);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+  }
+  button.reset {
+    background: transparent;
+    color: var(--amber);
+    border: 1px solid var(--line-2);
+    padding: 6px 14px;
+    font-family: inherit;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .14em;
+    cursor: pointer;
+  }
+  button.reset:hover {
+    background: rgba(217,164,65,.08);
+    border-color: var(--amber);
+  }
+
+  /* ---- layout ---- */
+  main.wrap {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 28px;
+    padding: 28px 32px 80px;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  @media (max-width: 900px) {
+    main.wrap { grid-template-columns: 1fr; }
+    nav.toc { position: relative !important; top: 0 !important; }
+  }
+
+  nav.toc {
+    position: sticky;
+    top: 70px;
+    align-self: start;
+    border-left: 2px solid var(--line);
+    padding-left: 14px;
+  }
+  nav.toc h3 {
+    margin: 0 0 10px;
+    font-size: 10px;
+    letter-spacing: .3em;
+    color: var(--amber);
+    text-transform: uppercase;
+  }
+  nav.toc a {
+    display: block;
+    padding: 6px 0;
+    color: var(--muted);
+    font-size: 12px;
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    padding-left: 8px;
+    margin-left: -10px;
+    transition: color .15s ease, border-color .15s ease;
+  }
+  nav.toc a:hover { color: var(--khaki); }
+  nav.toc a.active {
+    color: var(--olive-2);
+    border-color: var(--olive-2);
+  }
+
+  /* ---- sections ---- */
+  section.panel {
+    background: linear-gradient(180deg, var(--panel) 0%, var(--panel-2) 100%);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow);
+    padding: 24px 26px 22px;
+    margin-bottom: 22px;
+    position: relative;
+  }
+  section.panel::before {
+    content: "▰▱▰▱▰▱▰▱▰▱▰▱▰▱▰▱";
+    position: absolute;
+    top: -10px;
+    left: 18px;
+    font-size: 10px;
+    color: var(--olive);
+    background: var(--bg);
+    padding: 0 8px;
+    letter-spacing: .05em;
+  }
+  section.panel h2 {
+    margin: 0 0 4px;
+    font-size: 17px;
+    color: var(--olive-2);
+    letter-spacing: .04em;
+  }
+  section.panel .lede {
+    color: var(--khaki);
+    font-size: 12px;
+    margin: 0 0 18px;
+  }
+  section.panel.complete h2::after {
+    content: "  ◉ COMPLETE";
+    color: var(--safe);
+    font-size: 11px;
+    letter-spacing: .2em;
+  }
+
+  /* ---- step row ---- */
+  .step {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 14px;
+    align-items: start;
+    padding: 14px 0;
+    border-top: 1px dashed var(--line);
+  }
+  .step:first-of-type { border-top: 0; }
+  .step .check {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    margin-top: 2px;
+    border: 1.5px solid var(--line-2);
+    background: #0d0e08;
+    cursor: pointer;
+    position: relative;
+    transition: border-color .15s, background .15s;
+  }
+  .step .check:hover { border-color: var(--olive-2); }
+  .step .check:checked {
+    border-color: var(--olive-2);
+    background:
+      linear-gradient(135deg, var(--olive) 0%, var(--olive-2) 100%);
+  }
+  .step .check:checked::after {
+    content: "✓";
+    color: var(--bg);
+    position: absolute;
+    inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    font-weight: 800;
+  }
+  .step.done .body { opacity: .55; }
+  .step.done .body .title { text-decoration: line-through; }
+
+  .step .body .title {
+    font-size: 14px;
+    color: var(--text);
+    letter-spacing: .02em;
+  }
+  .step .body .desc {
+    font-size: 12.5px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  /* ---- code block ---- */
+  pre.code {
+    background: #0c0d07;
+    border: 1px solid var(--line);
+    color: #d8d6b1;
+    padding: 12px 14px;
+    margin: 10px 0 0;
+    overflow-x: auto;
+    font-size: 12px;
+    line-height: 1.5;
+    position: relative;
+  }
+  pre.code .copy {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background: var(--panel);
+    color: var(--amber);
+    border: 1px solid var(--line-2);
+    padding: 2px 8px;
+    font-family: inherit;
+    font-size: 10px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  pre.code .copy:hover { background: rgba(217,164,65,.08); }
+  pre.code .copy.ok { color: var(--safe); border-color: var(--safe); }
+
+  /* ---- callouts ---- */
+  .callout {
+    border-left: 3px solid var(--amber);
+    background: rgba(217,164,65,.06);
+    padding: 8px 12px;
+    margin: 10px 0 0;
+    font-size: 12.5px;
+    color: var(--khaki);
+  }
+  .callout.warn { border-color: var(--crimson); background: rgba(160,37,37,.08); color: #e9c4c4; }
+  .callout.ok   { border-color: var(--safe);    background: rgba(106,138,74,.08); color: #cfdec0; }
+  .callout strong { color: var(--text); letter-spacing: .04em; text-transform: uppercase; font-size: 11px; }
+
+  /* ---- chip / tag ---- */
+  .chip {
+    display: inline-block;
+    border: 1px solid var(--line-2);
+    color: var(--olive-2);
+    background: rgba(143,160,105,.08);
+    font-size: 10px;
+    padding: 2px 8px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    margin-right: 6px;
+  }
+  .chip.amber  { color: var(--amber-2); border-color: var(--amber); background: rgba(217,164,65,.08); }
+  .chip.red    { color: #e29494;       border-color: var(--crimson); background: rgba(160,37,37,.08); }
+  .chip.green  { color: #b6cb98;       border-color: var(--safe); background: rgba(106,138,74,.08); }
+
+  /* ---- capabilities table ---- */
+  table.matrix {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 12.5px;
+  }
+  table.matrix th, table.matrix td {
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  table.matrix th {
+    color: var(--amber);
+    font-weight: normal;
+    text-transform: uppercase;
+    letter-spacing: .14em;
+    font-size: 10px;
+  }
+  table.matrix tr:hover td { background: rgba(143,160,105,.05); }
+  td.can  { color: var(--olive-2); }
+  td.cant { color: #d49b9b; }
+
+  /* ---- footer ---- */
+  footer.brand {
+    border-top: 1px solid var(--line);
+    padding: 18px 32px;
+    color: var(--muted);
+    font-size: 11px;
+    text-align: center;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+  }
+
+  /* selection */
+  ::selection { background: var(--olive); color: var(--bg); }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: var(--bg-2); }
+  ::-webkit-scrollbar-thumb { background: var(--line-2); border: 2px solid var(--bg-2); }
+  ::-webkit-scrollbar-thumb:hover { background: var(--olive); }
+</style>
+</head>
+<body>
+
+<header class="briefing">
+  <div>
+    <div class="crest">▰▱▰▱  GZW · OPERATOR HANDBOOK  ▱▰▱▰</div>
+    <h1>GZW Tac DisBot — Setup &amp; Run Flow</h1>
+    <div class="sub">
+      Step-by-step checklist for deploying the bot, wiring connectors, and
+      operating it in your guild. Progress is saved locally in this browser.
+    </div>
+  </div>
+  <div class="meta">
+    <div>SECTOR · LAMANG</div>
+    <div><span class="pulse">●</span> CHECKLIST · LIVE</div>
+    <div id="now">--:--:-- ZULU</div>
+  </div>
+</header>
+
+<div class="progress-shell">
+  <div class="row">
+    <span class="progress-label">Mission progress</span>
+    <div class="progress-bar"><div class="fill" id="fill"></div></div>
+    <span class="progress-label" id="pct">0% · 0/0</span>
+    <button class="reset" id="reset">Reset Checklist</button>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <!-- ===== TOC ===== -->
+  <nav class="toc" id="toc">
+    <h3>Briefing index</h3>
+    <a href="#sec-prereq">0 · Prerequisites</a>
+    <a href="#sec-install">1 · Install</a>
+    <a href="#sec-discord">2 · Discord app</a>
+    <a href="#sec-env">3 · Configure .env</a>
+    <a href="#sec-seed">4 · Seed snapshot</a>
+    <a href="#sec-run">5 · Run the bot</a>
+    <a href="#sec-verify">6 · Verify in Discord</a>
+    <a href="#sec-deploy">7 · Promote to prod</a>
+    <a href="#sec-tracker">8 · Operator tracker</a>
+    <a href="#sec-troubleshoot">9 · Troubleshooting</a>
+    <a href="#sec-matrix">10 · Capability matrix</a>
+    <a href="#sec-flow">11 · Bot data flow</a>
+    <a href="#sec-commands">12 · Command reference</a>
+  </nav>
+
+  <!-- ===== CONTENT ===== -->
+  <div>
+
+    <!-- 0 prereq ------------------------------------------------ -->
+    <section class="panel" id="sec-prereq">
+      <h2>0 · Prerequisites</h2>
+      <p class="lede">Before extraction. Confirm the kit before you move out.</p>
+
+      <div class="step">
+        <input type="checkbox" class="check" data-id="p1" />
+        <div class="body">
+          <div class="title"><span class="chip">CHECK</span> Python 3.11 or newer installed</div>
+          <div class="desc">discord.py 2.4 needs Python 3.10+. We test on 3.11.</div>
+          <pre class="code">python --version
+# python 3.11.x or higher</pre>
+        </div>
+      </div>
+
+      <div class="step">
+        <input type="checkbox" class="check" data-id="p2" />
+        <div class="body">
+          <div class="title"><span class="chip">CHECK</span> Outbound HTTPS to discord.com + gzwtacmap.com</div>
+          <div class="desc">If you're behind a firewall, allowlist these origins.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <input type="checkbox" class="check" data-id="p3" />
+        <div class="body">
+          <div class="title"><span class="chip">CHECK</span> A Discord guild where you are an admin</div>
+          <div class="desc">For fast slash-command sync put its ID in <code>DEV_GUILD_IDS</code>.</div>
+        </div>
+      </div>
+
+      <div class="callout"><strong>Note</strong> · The bot does not need any Discord <em>privileged intents</em>. Slash commands only.</div>
+    </section>
+
+    <!-- 1 install ----------------------------------------------- -->
+    <section class="panel" id="sec-install">
+      <h2>1 · Install</h2>
+      <p class="lede">Get the code on disk. ~30 seconds with cached pip.</p>
+
+      <div class="step">
+        <input type="checkbox" class="check" data-id="i1" />
+        <div class="body">
+          <div class="title"><span class="chip">STEP</span> Clone the repo &amp; create a venv</div>
+          <pre class="code">git clone &lt;your-fork-or-this-repo&gt; gzw-disbot
+cd gzw-disbot
+python -m venv .venv
+. .venv/bin/activate         # Windows: .venv\Scripts\activate</pre>
+        </div>
+      </div>
+
+      <div class="step">
+        <input type="checkbox" class="check" data-id="i2" />
+        <div class="body">
+          <div class="title"><span class="chip">STEP</span> Install dependencies</div>
+          <pre class="code">pip install -r requirements.txt</pre>
+          <div class="callout"><strong>Tip</strong> · On Alpine / minimal Linux you may need <code>apt-get install gcc libxml2</code> for <code>lxml</code> first.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2 discord ----------------------------------------------- -->
+    <section class="panel" id="sec-discord">
+      <h2>2 · Discord application</h2>
+      <p class="lede">Stand up a Discord bot identity. Re-runnable any time.</p>
+
+      <div class="step">
+        <input type="checkbox" class="check" data-id="d1" />
+        <div class="body">
+          <div class="title"><span class="chip">STEP</span> Create a new Application</div>
+          <div class="desc">Open <code>https://discord.com/developers/applications</code> → <em>New Application</em>.</div>
+        </div>
+      </div>
+      <div class="step">
+        <input type="checkbox" class="check" data-id="d2" />
+        <div class="body">
+          <div class="title"><span class="chip">STEP</span> Bot tab → Reset Token</div>
+          <div class="desc">Copy the token. Treat it like a password — it goes in <code>.env</code> only.</div>
+          <div class="callout warn"><strong>Sensitive</strong> · Don't commit <code>.env</code>. <code>.gitignore</code> excludes it by default.</div>
+        </div>
+      </div>
+      <div class="step">
+        <input type="checkbox" class="check" data-id="d3" />
+        <div class="body">
+          <div class="title"><span class="chip">STEP</span> Build an OAuth invite URL</div>
+          <div class="desc">OAuth2 → URL Generator → scopes: <code>bot</code>, <code>applications.commands</code>. Bot Permissions: Send Messages, Embed Links, Use Slash Commands. Invite to your test guild.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 env --------------------------------------------------- -->
+    <section class="panel" id="sec-env">
+      <h2>3 · Configure <code>.env</code></h2>
+      <p class="lede">One file controls every knob.</p>
+
+      <div class="step">
+        <input type="checkbox" class="check" data-id="e1" />
+        <div class="body">
+          <div class="title"><span class="chip">STEP</span> Copy the template</div>
+          <pre class="code">cp .env.example .env</pre>
+        </div>
+      </div>
+      <div class="step">
+        <input type="checkbox" class="check" data-id="e2" />
+        <div class="body">
+          <div class="title"><span class="chip">STEP</span> Fill in <code>DISCORD_TOKEN</code> and <code>DEV_GUILD_IDS</code></div>
+          <pre class="code">DISCORD_TOKEN=MTI3...
+DEV_GUILD_IDS=123456789012345678
+GZW_BASE_URL=https://gzwtacmap.com
+REFRESH_CRON=0 */6 * * *
+SCRAPE_CONCURRENCY=4
+SCRAPE_DELAY_MS=400</pre>
+          <div class="callout"><strong>Tip</strong> · Leave <code>DEV_GUILD_IDS</code> empty later for global sync (~1h to propagate).</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 seed ----------------------------------------------- -->
+    <section class="panel" id="sec-seed">
+      <h2>4 · Seed snapshot (offline-friendly)</h2>
+      <p class="lede">Optional but recommended for first boot. Lets the bot answer immediately.</p>
+      <div class="step">
+        <input type="checkbox" class="check" data-id="s1" />
+        <div class="body">
+          <div class="title"><span class="chip">STEP</span> Run the seeder against the bundled fixtures</div>
+          <pre class="code">python scripts/seed_from_fixtures.py</pre>
+          <div class="desc">Writes <code>data/snapshot.json</code> with sample tasks/keys/places — enough to demo every command without scraping.</div>
+        </div>
+      </div>
+      <div class="step">
+        <input type="checkbox" class="check" data-id="s2" />
+        <div class="body">
+          <div class="title"><span class="chip">STEP</span> (Alt) Scrape gzwtacmap.com once before booting</div>
+          <pre class="code">python scripts/scrape.py</pre>
+          <div class="callout"><strong>Polite</strong> · The scraper caps concurrency at 4 and waits ~400 ms between requests.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5 run --------------------------------------------------- -->
+    <section class="panel" id="sec-run">
+      <h2>5 · Run the bot</h2>
+      <p class="lede">Boots the asyncio loop, syncs commands, schedules refresh.</p>
+      <div class="step">
+        <input type="checkbox" class="check" data-id="r1" />
+        <div class="body">
+          <div class="title"><span class="chip">STEP</span> Start in foreground</div>
+          <pre class="code">python -m bot.main</pre>
+          <div class="desc">Look for <code>synced N commands</code> and <code>refresh ok — {…}</code> on the console.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6 verify ----------------------------------------------- -->
+    <section class="panel" id="sec-verify">
+      <h2>6 · Verify in Discord</h2>
+      <p class="lede">Eyes-on inside your guild.</p>
+      <div class="step">
+        <input type="checkbox" class="check" data-id="v1" />
+        <div class="body">
+          <div class="title"><span class="chip">CHECK</span> <code>/help</code> renders the briefing embed</div>
+          <div class="desc">Olive-themed embed, banner header, command grid in a codeblock.</div>
+        </div>
+      </div>
+      <div class="step">
+        <input type="checkbox" class="check" data-id="v2" />
+        <div class="body">
+          <div class="title"><span class="chip">CHECK</span> <code>/task search query:incognito</code> returns the task</div>
+        </div>
+      </div>
+      <div class="step">
+        <input type="checkbox" class="check" data-id="v3" />
+        <div class="body">
+          <div class="title"><span class="chip">CHECK</span> <code>/place search query:1373</code> resolves by ID</div>
+        </div>
+      </div>
+      <div class="step">
+        <input type="checkbox" class="check" data-id="v4" />
+        <div class="body">
+          <div class="title"><span class="chip">CHECK</span> <code>/key search</code> autocomplete suggests keys</div>
+        </div>
+      </div>
+      <div class="step">
+        <input type="checkbox" class="check" data-id="v5" />
+        <div class="body">
+          <div class="title"><span class="chip">CHECK</span> <code>/refresh</code> works (owner only)</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7 deploy ------------------------------------------------ -->
+    <section class="panel" id="sec-deploy">
+      <h2>7 · Promote to production</h2>
+      <p class="lede">Pick one. systemd, Docker, or a managed runtime.</p>
+      <div class="step">
+        <input type="checkbox" class="check" data-id="dp1" />
+        <div class="body">
+          <div class="title"><span class="chip green">OK</span> systemd unit (Linux)</div>
+          <pre class="code">sudo cp deploy/gzw-disbot.service /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable --now gzw-disbot
+journalctl -u gzw-disbot -f</pre>
+          <div class="desc">See <code>docs/DEPLOYMENT.md</code> for the unit file template.</div>
+        </div>
+      </div>
+      <div class="step">
+        <input type="checkbox" class="check" data-id="dp2" />
+        <div class="body">
+          <div class="title"><span class="chip green">OK</span> Docker</div>
+          <pre class="code">docker build -t gzw-disbot .
+docker run --rm --env-file .env -v $PWD/data:/app/data gzw-disbot</pre>
+        </div>
+      </div>
+      <div class="step">
+        <input type="checkbox" class="check" data-id="dp3" />
+        <div class="body">
+          <div class="title"><span class="chip">CHECK</span> Set <code>DEV_GUILD_IDS=</code> empty for global sync</div>
+          <div class="desc">After verifying in your dev guild, switch to global. Allow ~1h to propagate.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8 tracker ----------------------------------------------- -->
+    <section class="panel" id="sec-tracker">
+      <h2>8 · Operator tracker (optional but fun)</h2>
+      <p class="lede">Per-user task &amp; key progress, persisted in SQLite.</p>
+      <div class="step">
+        <input type="checkbox" class="check" data-id="tr1" />
+        <div class="body">
+          <div class="title"><span class="chip">USE</span> Mark a task as done</div>
+          <pre class="code">/track set kind:task target:incognito status:done</pre>
+        </div>
+      </div>
+      <div class="step">
+        <input type="checkbox" class="check" data-id="tr2" />
+        <div class="body">
+          <div class="title"><span class="chip">USE</span> Add a key to your wallet</div>
+          <pre class="code">/track set kind:key target:tiger-bay-armory status:owned</pre>
+        </div>
+      </div>
+      <div class="step">
+        <input type="checkbox" class="check" data-id="tr3" />
+        <div class="body">
+          <div class="title"><span class="chip">USE</span> Show your status panel</div>
+          <pre class="code">/track me</pre>
+        </div>
+      </div>
+      <div class="callout"><strong>Privacy</strong> · Tracker replies are <em>ephemeral</em> — only you see them.</div>
+    </section>
+
+    <!-- 9 troubleshoot ------------------------------------------ -->
+    <section class="panel" id="sec-troubleshoot">
+      <h2>9 · Troubleshooting</h2>
+      <p class="lede">If you see this, do that.</p>
+
+      <div class="step">
+        <input type="checkbox" class="check" data-id="t1" />
+        <div class="body">
+          <div class="title"><span class="chip red">FAIL</span> "Missing required env var: DISCORD_TOKEN"</div>
+          <div class="desc">Edit <code>.env</code>, set <code>DISCORD_TOKEN=…</code>, re-run.</div>
+        </div>
+      </div>
+      <div class="step">
+        <input type="checkbox" class="check" data-id="t2" />
+        <div class="body">
+          <div class="title"><span class="chip red">FAIL</span> "synced 0 commands"</div>
+          <div class="desc">Either <code>DEV_GUILD_IDS</code> doesn't include your guild, or you're using global sync (give it 1h).</div>
+        </div>
+      </div>
+      <div class="step">
+        <input type="checkbox" class="check" data-id="t3" />
+        <div class="body">
+          <div class="title"><span class="chip red">FAIL</span> "fetch giving up: 403"</div>
+          <div class="desc">gzwtacmap.com is rate-limiting or blocking the User-Agent. Lower <code>SCRAPE_CONCURRENCY</code> and bump <code>SCRAPE_DELAY_MS</code>; set a contact email in <code>USER_AGENT</code>.</div>
+        </div>
+      </div>
+      <div class="step">
+        <input type="checkbox" class="check" data-id="t4" />
+        <div class="body">
+          <div class="title"><span class="chip red">FAIL</span> "snapshot empty — running initial scrape" loops</div>
+          <div class="desc">Scraper found nothing. Run <code>python scripts/seed_from_fixtures.py</code> as a fallback while you debug parsing.</div>
+        </div>
+      </div>
+      <div class="step">
+        <input type="checkbox" class="check" data-id="t5" />
+        <div class="body">
+          <div class="title"><span class="chip red">FAIL</span> Discord embed says "Comms broken"</div>
+          <div class="desc">Means a cog returned a known error embed. Check the bot console — full traceback is logged.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10 matrix ------------------------------------------------ -->
+    <section class="panel" id="sec-matrix">
+      <h2>10 · Capability matrix · what works / what doesn't</h2>
+      <p class="lede">Cross-checked against the actual code in <code>bot/</code>. Hover a row for highlight.</p>
+
+      <table class="matrix">
+        <thead>
+          <tr><th>Capability</th><th>Status</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Task search by name + autocomplete</td>             <td class="can">✓ works</td> <td>Fuzzy via rapidfuzz</td></tr>
+          <tr><td>Filter tasks by trader / type / faction</td>        <td class="can">✓ works</td> <td>5 traders, 3 types, 3 PMCs</td></tr>
+          <tr><td>Key search + door listing</td>                     <td class="can">✓ works</td> <td>region filter included</td></tr>
+          <tr><td>Place lookup by id (e.g. <code>1373</code>)</td>    <td class="can">✓ works</td> <td>numeric input handled directly</td></tr>
+          <tr><td>Landing zones / Combat outposts list</td>          <td class="can">✓ works</td> <td>group ids 1 + 38</td></tr>
+          <tr><td>Trader + faction dossiers</td>                     <td class="can">✓ works</td> <td>static + scrape-augmented counts</td></tr>
+          <tr><td>Universal fuzzy <code>/search</code></td>          <td class="can">✓ works</td> <td>all entity kinds</td></tr>
+          <tr><td>Per-user tracker (tasks + keys)</td>               <td class="can">✓ works</td> <td>SQLite, ephemeral replies</td></tr>
+          <tr><td>GZW-themed embeds, no HTML/CSS</td>                <td class="can">✓ works</td> <td>palette + ASCII HUD</td></tr>
+          <tr><td>Cron-scheduled refresh</td>                        <td class="can">✓ works</td> <td>default 6h</td></tr>
+          <tr><td>Manual <code>/refresh</code></td>                  <td class="can">✓ works</td> <td>owner only</td></tr>
+          <tr><td>Defensive scraper (Next.js + HTML fallback)</td>   <td class="can">✓ works</td> <td>survives layout drift</td></tr>
+          <tr><td>Inline interactive map render</td>                 <td class="cant">✗ no</td>  <td>WebGL canvas — link only</td></tr>
+          <tr><td>Inline video guide playback</td>                   <td class="cant">✗ no</td>  <td>Discord auto-unfurls YouTube</td></tr>
+          <tr><td>Multi-map (more than Lamang)</td>                  <td class="cant">✗ no</td>  <td>single MAP_SLUG today</td></tr>
+          <tr><td>Cross-user / clan dashboard</td>                   <td class="cant">✗ no</td>  <td>tracker is per-user only</td></tr>
+          <tr><td>Push notifications on dataset changes</td>         <td class="cant">✗ no</td>  <td>refresh is silent (extension hook ready)</td></tr>
+          <tr><td>Database migrations</td>                           <td class="cant">✗ no</td>  <td>idempotent CREATEs only</td></tr>
+          <tr><td>Bypass paywalls / login</td>                       <td class="cant">✗ no</td>  <td>not needed; site is public</td></tr>
+          <tr><td>Scrape facial / personal data</td>                 <td class="cant">✗ no</td>  <td>policy: never</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 11 flow -------------------------------------------------- -->
+    <section class="panel" id="sec-flow">
+      <h2>11 · Bot data flow</h2>
+      <p class="lede">How a slash command turns into an embed.</p>
+      <pre class="code" style="white-space: pre;">
+   user types /task search query:incognito
+                │
+                ▼
+   ┌─────────────────────┐
+   │ Tasks cog (cogs/    │
+   │ tasks.py)           │
+   └──────────┬──────────┘
+              │ store.task_by_slug or fuzzy search
+              ▼
+   ┌─────────────────────┐
+   │ GZWStore (in-mem)   │  ←── snapshot.json (loaded at boot)
+   └──────────┬──────────┘
+              │ dict
+              ▼
+   ┌─────────────────────┐
+   │ embeds.embed_task() │  → discord.Embed
+   └──────────┬──────────┘
+              │
+              ▼
+        Discord channel
+
+  Background:
+    apscheduler ──▶ scrape_all() ──▶ writes new snapshot
+                                  ──▶ atomically swaps GZWStore</pre>
+    </section>
+
+    <!-- 12 commands --------------------------------------------- -->
+    <section class="panel" id="sec-commands">
+      <h2>12 · Command quick reference</h2>
+      <p class="lede">Cheat-sheet you can leave open during ops.</p>
+      <pre class="code">/help                                       → briefing
+/task search query:&lt;name&gt;                    → one task
+/task list trader: type: faction: limit:    → filtered list
+/key search query:&lt;name&gt;                     → one key + doors
+/key list region: limit:                    → keys per region
+/place search query:&lt;name|id&gt;                → POI by id (1373) or name
+/place list region: group: limit:           → POIs filtered
+/lz                                          → all landing zones
+/cop                                         → all combat outposts
+/trader info name:&lt;n&gt;                        → vendor dossier
+/faction info name:&lt;n&gt;                       → faction dossier
+/faction list type:&lt;pmc|hostile&gt;             → faction list
+/search query:&lt;text&gt; limit:                  → universal fuzzy search
+/track me                                    → your operator panel
+/track set kind:&lt;task|key&gt; target:… status:… → mark progress
+/track faction name:&lt;LRI|Mithras|CSI&gt;        → set your PMC
+/track reset                                 → wipe your tracker
+/map                                         → map link + cache stats
+/refresh                                     → owner-only re-scrape
+/ping                                        → latency check</pre>
+    </section>
+
+  </div>
+</main>
+
+<footer class="brand">
+  GZW Tac DisBot · Operator Handbook · Intel courtesy of gzwtacmap.com
+</footer>
+
+<script>
+/* =====================================================================
+   tiny self-contained checklist runtime
+   ===================================================================== */
+(function () {
+  const KEY = "gzw-tac-disbot-flow.v1";
+
+  const state = (() => {
+    try { return JSON.parse(localStorage.getItem(KEY)) || {}; }
+    catch { return {}; }
+  })();
+
+  const checks = Array.from(document.querySelectorAll(".check"));
+  const fill = document.getElementById("fill");
+  const pct = document.getElementById("pct");
+  const reset = document.getElementById("reset");
+
+  // --- restore + bind ---
+  checks.forEach((c) => {
+    const id = c.dataset.id;
+    if (state[id]) c.checked = true;
+    syncRow(c);
+    c.addEventListener("change", () => {
+      state[id] = c.checked;
+      localStorage.setItem(KEY, JSON.stringify(state));
+      syncRow(c);
+      updateProgress();
+      updateSectionMarks();
+    });
+  });
+
+  function syncRow(c) {
+    const row = c.closest(".step");
+    if (!row) return;
+    row.classList.toggle("done", c.checked);
+  }
+
+  function updateProgress() {
+    const total = checks.length;
+    const done = checks.filter((c) => c.checked).length;
+    const p = total ? Math.round((done / total) * 100) : 0;
+    fill.style.width = p + "%";
+    pct.textContent = p + "% · " + done + "/" + total;
+  }
+
+  function updateSectionMarks() {
+    document.querySelectorAll("section.panel").forEach((sec) => {
+      const ck = sec.querySelectorAll(".check");
+      if (!ck.length) return;
+      const done = Array.from(ck).every((c) => c.checked);
+      sec.classList.toggle("complete", done);
+    });
+  }
+
+  // --- reset ---
+  reset.addEventListener("click", () => {
+    if (!confirm("Wipe local progress?")) return;
+    localStorage.removeItem(KEY);
+    checks.forEach((c) => { c.checked = false; syncRow(c); });
+    updateProgress();
+    updateSectionMarks();
+  });
+
+  // --- copy buttons on each <pre> ---
+  document.querySelectorAll("pre.code").forEach((pre) => {
+    if (!pre.textContent.trim()) return;
+    const btn = document.createElement("button");
+    btn.className = "copy";
+    btn.textContent = "copy";
+    btn.addEventListener("click", () => {
+      const txt = pre.textContent.replace(/^\s*copy\s*/, "").trim();
+      navigator.clipboard.writeText(txt).then(() => {
+        btn.textContent = "copied";
+        btn.classList.add("ok");
+        setTimeout(() => { btn.textContent = "copy"; btn.classList.remove("ok"); }, 1200);
+      });
+    });
+    pre.appendChild(btn);
+  });
+
+  // --- TOC active-section highlight on scroll ---
+  const tocLinks = Array.from(document.querySelectorAll("nav.toc a"));
+  const sections = tocLinks.map((a) => document.querySelector(a.getAttribute("href")));
+  function syncToc() {
+    const top = window.scrollY + 90;
+    let cur = sections[0];
+    for (const s of sections) if (s && s.offsetTop <= top) cur = s;
+    tocLinks.forEach((a) => a.classList.toggle("active", a.getAttribute("href") === "#" + (cur && cur.id)));
+  }
+  document.addEventListener("scroll", syncToc, { passive: true });
+  syncToc();
+
+  // --- ZULU clock ---
+  const now = document.getElementById("now");
+  function tick() {
+    const d = new Date();
+    const z = (n) => String(n).padStart(2, "0");
+    now.textContent = z(d.getUTCHours()) + ":" + z(d.getUTCMinutes()) + ":" + z(d.getUTCSeconds()) + " ZULU";
+  }
+  tick(); setInterval(tick, 1000);
+
+  // --- init ---
+  updateProgress();
+  updateSectionMarks();
+})();
+</script>
+</body>
+</html>

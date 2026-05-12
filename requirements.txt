@@ -1,0 +1,22 @@
+# --- Discord ---
+discord.py==2.4.0
+
+# --- HTTP / Scraping ---
+aiohttp==3.9.5
+beautifulsoup4==4.12.3
+lxml==5.2.2
+yarl==1.9.4
+
+# --- Data ---
+pydantic==2.7.4
+python-dotenv==1.0.1
+rapidfuzz==3.9.6        # fuzzy search for /search and autocomplete
+
+# --- Storage ---
+aiosqlite==0.20.0
+
+# --- Scheduling ---
+apscheduler==3.10.4
+
+# --- Logging / dev ---
+rich==13.7.1

@@ -1,0 +1,10 @@
+[
+  {"name": "Lamang Recovery Initiative (LRI)", "type": "pmc", "hq": "LRI Base — northwest Lamang", "aor": "Across Lamang", "threat": "—", "bio": "Humanitarian-leaning PMC focused on recovery operations."},
+  {"name": "Mithras Security Systems", "type": "pmc", "hq": "Mithras Base — southeast Lamang", "aor": "Across Lamang", "threat": "—", "bio": "Corporate-focused security firm."},
+  {"name": "Crimson Shield International (CSI)", "type": "pmc", "hq": "CSI Base — central Lamang", "aor": "Across Lamang", "threat": "—", "bio": "Hard-line PMC, kinetic operations."},
+  {"name": "Lotus Circle", "type": "hostile", "hq": "Hunter's Paradise", "aor": "Hunter's Paradise + nearby jungles", "threat": "Mid", "bio": "Vietnamese organized-crime syndicate."},
+  {"name": "Naga Pirates", "type": "hostile", "hq": "Ban Pa / Tiger Bay", "aor": "Coastal villages, docks", "threat": "Mid-High", "bio": "Malay pirate group exploiting the chaos."},
+  {"name": "Viper Tactical Services", "type": "hostile", "hq": "Pha Lang Airfield", "aor": "Airfield + Fort Narith", "threat": "High", "bio": "Highly lethal Thai PMC; uses suppressive fire and flanking."},
+  {"name": "Lamang Liberation Army (LLA)", "type": "hostile", "hq": "Inland villages", "aor": "Kiu Vongsa", "threat": "Low-Mid", "bio": "Insurgent militia with deep village ties."},
+  {"name": "Sifa Syndicate", "type": "hostile", "hq": "—", "aor": "Smuggling routes", "threat": "Mid", "bio": "Smuggling network running weapons and contraband."}
+]

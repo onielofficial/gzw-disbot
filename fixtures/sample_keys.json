@@ -1,0 +1,53 @@
+[
+  {
+    "slug": "tiger-bay-armory",
+    "name": "Tiger Bay Central Armory Key",
+    "region": "Tiger Bay",
+    "found_on": "Naga Pirate officer",
+    "rarity": "Rare",
+    "uses": null,
+    "doors": [
+      {"name": "Tiger Bay Central — Armory door", "location": "Tiger Bay Central", "place_id": null}
+    ],
+    "notes": "Armory holds 2 weapon crates and a UN firearms box.",
+    "source_url": "https://gzwtacmap.com/maps/lamang/keys"
+  },
+  {
+    "slug": "hunters-paradise-motel-armory",
+    "name": "Hunter's Paradise Motel Improvised Armory Key",
+    "region": "Hunter's Paradise",
+    "found_on": "Lotus Circle Gunner",
+    "rarity": "Uncommon",
+    "uses": null,
+    "doors": [
+      {"name": "Motel — improvised armory", "location": "Hunter's Paradise Motel", "place_id": null}
+    ],
+    "notes": "Decent rifle spawn; safer to clear motel exterior first."
+  },
+  {
+    "slug": "ybl-1-weapon-storage",
+    "name": "YBL-1 Weapon Storage Key",
+    "region": "YBL-1",
+    "found_on": "YBL-1 Officer",
+    "rarity": "Rare",
+    "uses": null,
+    "doors": [{"name": "Weapon Storage Room", "location": "YBL-1 bunker", "place_id": null}]
+  },
+  {
+    "slug": "kiu-vongsa-doctor-office",
+    "name": "Kiu Vongsa Doctor's Office Key",
+    "region": "Kiu Vongsa",
+    "found_on": "LLA Medic",
+    "rarity": "Common",
+    "doors": [{"name": "Doctor's office", "location": "Kiu Vongsa town center"}]
+  },
+  {
+    "slug": "ban-pa-fishing-hut",
+    "name": "Ban Pa Fishing Hut Key",
+    "region": "Ban Pa",
+    "found_on": "Naga Pirate Lookout",
+    "rarity": "Common",
+    "doors": [{"name": "Fishing hut", "location": "Ban Pa coastline"}],
+    "notes": "Yields multiple UN firearms boxes per run."
+  }
+]

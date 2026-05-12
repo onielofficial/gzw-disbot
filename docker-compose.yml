@@ -1,0 +1,10 @@
+version: "3.9"
+services:
+  gzw-disbot:
+    build: .
+    image: gzw-disbot:latest
+    container_name: gzw-disbot
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./data:/app/data

@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+*.sqlite
+*.sqlite-journal
+.env
+.venv/
+venv/
+data/
+logs/
+.DS_Store
+.idea/
+.vscode/
+*.log

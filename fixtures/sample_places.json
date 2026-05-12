@@ -1,0 +1,86 @@
+[
+  {
+    "id": "1373",
+    "name": "Incognito Task — Intel",
+    "group": "Task Objective",
+    "region": "Hunter's Paradise",
+    "description": "Stashed intel package for the Incognito task — under the bar's floor planks.",
+    "coords": "812,1404",
+    "nearest_lz": "Hunter's Paradise LZ-2",
+    "related_tasks": ["incognito"],
+    "source_url": "https://gzwtacmap.com/maps/lamang/place/1373"
+  },
+  {
+    "id": "1565",
+    "name": "Incognito — Encampment",
+    "group": "Task Objective",
+    "region": "Hunter's Paradise",
+    "description": "Hostile encampment overlook. Tag from the eastern ridge.",
+    "coords": "843,1419",
+    "nearest_lz": "Hunter's Paradise LZ-1",
+    "related_tasks": ["incognito"]
+  },
+  {
+    "id": "1308",
+    "name": "Sapphire Compound",
+    "group": "Task Objective",
+    "region": "Midnight Sapphire",
+    "description": "Hostile group's signal repeater stack — east tower.",
+    "coords": "1102,1015",
+    "nearest_lz": "Sapphire LZ",
+    "related_tasks": ["business-or-pleasure"]
+  },
+  {
+    "id": "2298",
+    "name": "Fort Narith — Airfield Entrance",
+    "group": "Task Objective",
+    "region": "Fort Narith",
+    "description": "Main checkpoint entering the airfield, manned by Viper Tactical.",
+    "coords": "590,810",
+    "nearest_lz": "Fort Narith LZ-3",
+    "related_tasks": ["fort-narith-stroll"]
+  },
+  {
+    "id": "1438",
+    "name": "Blue Lagoon Intel Drop",
+    "group": "Task Objective",
+    "region": "Blue Lagoon",
+    "description": "UNLRA research dossier — pinned under the wreckage at low tide.",
+    "coords": "440,520",
+    "nearest_lz": "Blue Lagoon LZ-1",
+    "related_tasks": ["lamang-connection"]
+  },
+  {
+    "id": "LZ-PAR-1",
+    "name": "Hunter's Paradise LZ-1",
+    "group": "Landing Zones",
+    "region": "Hunter's Paradise",
+    "description": "Northern landing pad, light cover, occasional Lotus Circle patrols.",
+    "coords": "850,1390",
+    "nearest_lz": "self"
+  },
+  {
+    "id": "LZ-PAR-2",
+    "name": "Hunter's Paradise LZ-2",
+    "group": "Landing Zones",
+    "region": "Hunter's Paradise",
+    "description": "South pad, closer to the motel, hot during peak hours.",
+    "coords": "820,1430"
+  },
+  {
+    "id": "COP-TB",
+    "name": "Tiger Bay COP",
+    "group": "Combat Outposts",
+    "region": "Tiger Bay",
+    "description": "Combat outpost overlooking the docks.",
+    "coords": "1130,920"
+  },
+  {
+    "id": "COP-FN",
+    "name": "Fort Narith COP",
+    "group": "Combat Outposts",
+    "region": "Fort Narith",
+    "description": "Sandbagged combat outpost north of the airfield.",
+    "coords": "560,795"
+  }
+]

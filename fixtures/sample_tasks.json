@@ -1,0 +1,72 @@
+[
+  {
+    "slug": "incognito",
+    "name": "Incognito",
+    "type": "main",
+    "trader": "Gunny",
+    "faction": "Any",
+    "summary": "Recover intel from Hunter's Paradise without alerting the Lotus Circle.",
+    "description": "Move quietly into Hunter's Paradise, locate the marked stash, and recover the intel package. Avoid drawing attention from Lotus Circle patrols. Extract via the southern LZ.",
+    "objectives": [
+      {"id": "1373", "name": "Retrieve intel package", "place_id": "1373"},
+      {"id": "1565", "name": "Mark hostile encampment", "place_id": "1565"}
+    ],
+    "rewards": ["12,000 GZD", "Vendor rep +250", "Suppressor blueprint"],
+    "prerequisites": ["Reach Gunny lvl 2"],
+    "source_url": "https://gzwtacmap.com/maps/lamang/tasks/incognito"
+  },
+  {
+    "slug": "business-or-pleasure",
+    "name": "Business or Pleasure",
+    "type": "main",
+    "trader": "Handshake",
+    "faction": "Any",
+    "summary": "Investigate hostile group movements at the Sapphire compound.",
+    "description": "Reach the Sapphire compound, identify hostile signal repeaters, and tag them for follow-up by Mithras assets.",
+    "objectives": [
+      {"id": "1308", "name": "Determine hostile group's intentions", "place_id": "1308"}
+    ],
+    "rewards": ["8,500 GZD", "Vendor rep +180"],
+    "prerequisites": [],
+    "source_url": "https://gzwtacmap.com/maps/lamang/tasks/business-or-pleasure"
+  },
+  {
+    "slug": "fort-narith-stroll",
+    "name": "Fort Narith Stroll",
+    "type": "side",
+    "trader": "Artisan",
+    "faction": "Any",
+    "summary": "Recon Fort Narith airfield approach without engaging.",
+    "description": "Sweep the Fort Narith airfield entrance, photograph defensive positions, exfil clean.",
+    "objectives": [{"id": "2298", "name": "Airfield Entrance recon", "place_id": "2298"}],
+    "rewards": ["6,000 GZD", "Mod kit"],
+    "prerequisites": [],
+    "source_url": "https://gzwtacmap.com/maps/lamang/tasks/fort-narith-stroll"
+  },
+  {
+    "slug": "lamang-connection",
+    "name": "Lamang Connection",
+    "type": "main",
+    "trader": "Lab Rat",
+    "faction": "Any",
+    "summary": "Recover bio-research intel from Blue Lagoon.",
+    "description": "Find the UNLRA research dossier dropped near Blue Lagoon. Recover before the next storm cycle.",
+    "objectives": [{"id": "1438", "name": "Blue Lagoon Intel", "place_id": "1438"}],
+    "rewards": ["10,000 GZD", "IFAK x2"],
+    "prerequisites": [],
+    "source_url": "https://gzwtacmap.com/maps/lamang/tasks/lamang-connection"
+  },
+  {
+    "slug": "supply-chain",
+    "name": "Supply Chain",
+    "type": "contract",
+    "trader": "Banshee",
+    "faction": "Any",
+    "summary": "Repeatable: deliver 5 medkits to the Banshee dropoff.",
+    "description": "Stock up on medkits and drop them at the rotating Banshee deadbox.",
+    "objectives": [{"id": "DROP", "name": "Drop 5 medkits", "place_id": null}],
+    "rewards": ["1,500 GZD per run"],
+    "prerequisites": [],
+    "source_url": "https://gzwtacmap.com/maps/lamang/tasks/supply-chain"
+  }
+]

@@ -1,0 +1,7 @@
+[
+  {"name": "Handshake", "callsign": "Lewis Pell", "role": "Operations / Public liaison", "faction": "PMC (any)", "bio": "First contact for new operators arriving on Lamang.", "specialties": ["Tier-1 ops", "Public image"], "task_count": 18},
+  {"name": "Gunny", "callsign": "Anton Jackson", "role": "Quartermaster", "faction": "PMC (any)", "bio": "Former USMC. Quartermaster — ammo, guns, basic gear.", "specialties": ["Weapons", "Ammo"], "task_count": 14},
+  {"name": "Lab Rat", "callsign": "Jie", "role": "Medical / Bio-research", "faction": "PMC (any)", "bio": "Drags you into UNLRA medical-supply runs that turn into bio-hazard ops fast.", "specialties": ["Medkits", "UNLRA"], "task_count": 11},
+  {"name": "Artisan", "callsign": "Laya Hoang", "role": "Mechanic / Engineer", "faction": "PMC (any)", "bio": "Modding, repairs, vehicle parts.", "specialties": ["Mods", "Parts"], "task_count": 10},
+  {"name": "Banshee", "callsign": "—", "role": "Survival / Black market", "faction": "PMC (any)", "bio": "Backchannel supplier — has the goods you actually need.", "specialties": ["Survival", "Off-book"], "task_count": 7}
+]
