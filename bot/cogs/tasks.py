@@ -11,6 +11,7 @@ from discord.ext import commands
 from ..config import load
 from ..utils.embeds import embed_task, embed_search_results, embed_error
 from ..utils.map_render import render_location_map
+from ..data.locations import find_coords
 from ._shared import _fuzzy_pick, store
 
 logger = logging.getLogger(__name__)
@@ -41,6 +42,9 @@ class Tasks(commands.GroupCog, name="task", description="Look up GZW tasks"):
         if not t:
             await interaction.response.send_message(embed=embed_error("Task not found."), ephemeral=True)
             return
+
+        logger.info("DEBUG task location: %r", t.get("location"))
+        logger.info("DEBUG find_coords result: %r", find_coords(t.get("location")))
 
         await interaction.response.send_message(embed=embed_task(t, base_url=self.s.base_url))
 
