@@ -17,6 +17,5 @@ COPY . .
 
 # Snapshot + tracker live in /app/data — mount this as a volume.
 RUN mkdir -p /app/data
-VOLUME ["/app/data"]
 
 CMD ["python", "-m", "bot.main"]
