@@ -140,12 +140,17 @@ async def _scrape_task_detail(fetcher: HttpFetcher, s: Settings, t: Task) -> Tas
                 for i, o in enumerate(objs)
             ]
 
-    # HTML fallback — the task detail page has a metadata table with rows like:
-    #   <td>Location</td><td>Tiger Bay</td>
-    # We also grab description from meta if the JSON path was empty.
+    # HTML fallback — gzwtacmap renders task metadata as:
+    #   <div class="task-details">
+    #     <div>Vendor<span>Artisan</span></div>
+    #     <div>Location<span>Tiger Bay</span></div>
+    #   </div>
+    # Parse every <div> whose direct text node matches the label and grab the
+    # text of its first <span> child.
     soup = BeautifulSoup(html, "lxml")
     if not t.location:
-        t.location = _parse_table_field(soup, "location") or _parse_table_field(soup, "region")
+        t.location = _parse_div_span_field(soup, "location") or _parse_div_span_field(soup, "region")
+        logger.debug("scraped location for %s: %r", t.slug, t.location)
     if not t.description:
         meta = soup.find("meta", attrs={"name": "description"})
         if meta and meta.get("content"):
@@ -153,14 +158,36 @@ async def _scrape_task_detail(fetcher: HttpFetcher, s: Settings, t: Task) -> Tas
     return t
 
 
-def _parse_table_field(soup: "BeautifulSoup", label: str) -> Optional[str]:
-    """Find a value paired with `label` in a simple two-column HTML table."""
+def _parse_div_span_field(soup: "BeautifulSoup", label: str) -> Optional[str]:
+    """Extract the <span> value from a <div>Label<span>Value</span></div> pattern.
+
+    Matches any <div> whose direct text content (excluding child tags) equals
+    `label` (case-insensitive), then returns the text of its first <span>.
+    Also handles plain <td> sibling pairs as a secondary fallback.
+    """
+    label_lower = label.lower()
+
+    # Primary: <div>Label<span>Value</span></div>
+    for div in soup.find_all("div"):
+        # Direct text = all NavigableString children joined, stripping whitespace
+        direct_text = "".join(
+            str(c) for c in div.children
+            if hasattr(c, "__class__") and c.__class__.__name__ == "NavigableString"
+        ).strip().lower()
+        if direct_text == label_lower:
+            span = div.find("span")
+            if span:
+                val = span.get_text(strip=True)
+                return val if val else None
+
+    # Secondary: <td>Label</td><td>Value</td>
     for td in soup.find_all("td"):
-        if td.get_text(strip=True).lower() == label.lower():
+        if td.get_text(strip=True).lower() == label_lower:
             sibling = td.find_next_sibling("td")
             if sibling:
                 val = sibling.get_text(strip=True)
                 return val if val else None
+
     return None
 
 
