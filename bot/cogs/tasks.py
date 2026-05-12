@@ -1,6 +1,7 @@
 """/task — search, list, filter Gray Zone Warfare tasks."""
 from __future__ import annotations
 
+import logging
 from typing import Optional
 
 import discord
@@ -9,13 +10,74 @@ from discord.ext import commands
 
 from ..config import load
 from ..utils.embeds import embed_task, embed_search_results, embed_error
+from ..utils.map_render import render_task_map
 from ._shared import _fuzzy_pick, store
+
+logger = logging.getLogger(__name__)
+
+
+def _objective_points(task: dict, places: list[dict]) -> list[tuple[float, float]]:
+    """Resolve (x, y) pixel coords for a task's objectives.
+
+    Prefers per-objective ``x``/``y`` (filled by the Playwright scraper).
+    Falls back to looking up the linked Place's ``coords`` string ("x,y").
+    Silently skips any objective whose coords can't be resolved.
+    """
+    by_id = {str(p.get("id")): p for p in places if p.get("id") is not None}
+    points: list[tuple[float, float]] = []
+    for o in task.get("objectives") or []:
+        x, y = o.get("x"), o.get("y")
+        if x is not None and y is not None:
+            try:
+                points.append((float(x), float(y)))
+                continue
+            except (TypeError, ValueError):
+                pass
+        pid = o.get("place_id")
+        if not pid:
+            continue
+        place = by_id.get(str(pid))
+        if not place or not place.get("coords"):
+            continue
+        parts = str(place["coords"]).split(",")
+        if len(parts) != 2:
+            continue
+        try:
+            points.append((float(parts[0].strip()), float(parts[1].strip())))
+        except ValueError:
+            continue
+    return points
 
 
 class Tasks(commands.GroupCog, name="task", description="Look up GZW tasks"):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.s = load()
+
+    async def _maybe_attach_map(self, interaction: discord.Interaction, task: dict) -> None:
+        """Render and follow-up with the objective map crop. No-op on failure."""
+        st = store(self.bot)
+        points = _objective_points(task, st.places)
+        if not points:
+            return
+        try:
+            file = await render_task_map(
+                points,
+                data_dir=self.s.data_dir,
+                map_slug=self.s.map_slug,
+                base_image_url=self.s.map_base_image_url or None,
+                user_agent=self.s.user_agent,
+                filename=f"{task.get('slug') or 'task'}-map.png",
+            )
+        except Exception:
+            logger.exception("map render crashed for %s", task.get("slug"))
+            return
+        if file is None:
+            return
+        try:
+            await interaction.followup.send(file=file)
+        except discord.HTTPException as exc:
+            logger.warning("failed to send map for %s: %s", task.get("slug"), exc)
 
     # -------- /task search --------
     @app_commands.command(name="search", description="Find a task by name")
@@ -39,6 +101,7 @@ class Tasks(commands.GroupCog, name="task", description="Look up GZW tasks"):
             await interaction.response.send_message(embed=embed_error("Task not found."), ephemeral=True)
             return
         await interaction.response.send_message(embed=embed_task(t, base_url=self.s.base_url))
+        await self._maybe_attach_map(interaction, t)
 
     @search.autocomplete("query")
     async def _ac_search(self, interaction: discord.Interaction, current: str):

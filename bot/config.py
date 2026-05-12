@@ -39,6 +39,18 @@ class Settings:
     scrape_delay_ms: int = field(default_factory=lambda: int(_env("SCRAPE_DELAY_MS", "400")))
     user_agent: str = field(default_factory=lambda: _env("USER_AGENT", "GZW-DisBot/1.0"))
 
+    # Playwright fallback — the gzwtacmap.com pages render objective markers
+    # client-side, so a headless Chromium pass is needed to capture x/y coords.
+    use_playwright: bool = field(
+        default_factory=lambda: _env("USE_PLAYWRIGHT", "1").strip().lower() not in ("0", "false", "no", "")
+    )
+    playwright_concurrency: int = field(default_factory=lambda: int(_env("PLAYWRIGHT_CONCURRENCY", "2")))
+    playwright_timeout_ms: int = field(default_factory=lambda: int(_env("PLAYWRIGHT_TIMEOUT_MS", "20000")))
+
+    # Base map image used by /task search to render objective crops.
+    # If unset, the renderer looks for a local file under data_dir/maps/<slug>.{png,webp,jpg}.
+    map_base_image_url: str = field(default_factory=lambda: _env("MAP_BASE_IMAGE_URL", ""))
+
     # cache / storage
     data_dir: Path = field(default_factory=lambda: Path(_env("DATA_DIR", str(ROOT / "data"))))
     cache_ttl_hours: int = field(default_factory=lambda: int(_env("CACHE_TTL_HOURS", "12")))

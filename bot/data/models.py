@@ -17,6 +17,11 @@ class Objective(BaseModel):
     name: Optional[str] = None
     note: Optional[str] = None
     place_id: Optional[str] = None
+    location: Optional[str] = None
+    # Pixel coordinates on the base map. Populated by the Playwright scraper
+    # — the aiohttp/Next.js path on gzwtacmap.com renders these client-side.
+    x: Optional[float] = None
+    y: Optional[float] = None
     done: bool = False
 
 
