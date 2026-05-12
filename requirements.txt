@@ -6,8 +6,6 @@ aiohttp==3.9.5
 beautifulsoup4==4.12.3
 lxml==5.2.2
 yarl==1.9.4
-playwright==1.45.0      # headless Chromium for client-rendered gzwtacmap pages
-
 # --- Imaging ---
 Pillow==10.4.0          # base-map crop + objective marker rendering
 

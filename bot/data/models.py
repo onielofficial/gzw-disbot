@@ -18,10 +18,6 @@ class Objective(BaseModel):
     note: Optional[str] = None
     place_id: Optional[str] = None
     location: Optional[str] = None
-    # Pixel coordinates on the base map. Populated by the Playwright scraper
-    # — the aiohttp/Next.js path on gzwtacmap.com renders these client-side.
-    x: Optional[float] = None
-    y: Optional[float] = None
     done: bool = False
 
 
@@ -32,6 +28,7 @@ class Task(BaseModel):
     type: Optional[str] = "main"  # main | side | contract
     trader: Optional[str] = None
     faction: Optional[str] = None
+    location: Optional[str] = None
     summary: Optional[str] = None
     description: Optional[str] = None
     objectives: List[Objective] = Field(default_factory=list)
